@@ -1,0 +1,17 @@
+# Secretos
+.env
+
+# Entorno virtual
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editor y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
