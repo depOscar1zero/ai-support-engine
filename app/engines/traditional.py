@@ -17,7 +17,9 @@ PRECEDENCIA = (
 REGLAS = {
     Category.SECURITY: {
         "vulnerabilidad": 3,
+        "brecha": 3,
         "hackea": 3,
+        "hackeo": 3,
         "filtracion": 3,
         "filtraciones": 3,
         "filtraron": 3,
@@ -176,8 +178,8 @@ def _puntuar_sin_solapamientos(texto: str, reglas: dict[str, int]) -> int:
 
 
 def _buscar_termino(termino: str, texto: str):
-    """Busca un término completo para evitar coincidencias dentro de palabras."""
-    return re.search(rf"\b{re.escape(termino)}\b", texto)
+    """Busca un término completo, aceptando su plural regular."""
+    return re.search(rf"\b{re.escape(termino)}(?:s|es)?\b", texto)
 
 
 def priorizar(texto: str, category: Category) -> Priority:

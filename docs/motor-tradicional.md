@@ -9,7 +9,7 @@ Antes de evaluar las reglas, el mensaje se convierte a minúsculas y se eliminan
 los acentos mediante normalización Unicode. De esta forma, por ejemplo, `sesión`
 y `sesion` producen la misma coincidencia. Los términos se buscan como palabras
 o frases completas para evitar coincidencias accidentales dentro de otras
-palabras.
+palabras. La búsqueda también acepta los sufijos regulares de plural `s` y `es`.
 
 ## Clasificación y puntuación
 

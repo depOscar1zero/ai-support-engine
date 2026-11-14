@@ -105,6 +105,21 @@ def test_termino_de_seguridad_no_coincide_dentro_de_otras_palabras():
 @pytest.mark.parametrize(
     "message",
     [
+        "Encontramos varias vulnerabilidades",
+        "Detectamos brechas de seguridad",
+        "Hubo hackeos en varias cuentas",
+    ],
+)
+def test_reconoce_plurales_de_terminos_de_seguridad(message):
+    resultado = analyze(message)
+
+    assert resultado.category is Category.SECURITY
+    assert resultado.priority is Priority.HIGH
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
         "Se filtra información de clientes",
         "Se filtran datos de clientes",
         "Se están filtrando datos",
