@@ -16,8 +16,6 @@ def _normalizar(texto: str) -> str:
 
 TERMINOS_SEGURIDAD = (
     "vulnerabilidad",
-    "hackeo",
-    "hackear",
     "filtración",
     "filtraron",
     "phishing",
@@ -39,17 +37,27 @@ TERMINOS_SEGURIDAD = (
 )
 
 
+# Raíces: límite de palabra al inicio y cualquier terminación
+# ("hacke" cubre hackeo, hackear, hackearon, hackeada, hackeos...).
+RAICES_SEGURIDAD = ("hacke",)
+
+
 def _patron_del_termino(termino: str) -> str:
-    # Las palabras de un término pueden ir separadas por cualquier espacio.
-    return r"\s+".join(re.escape(palabra) for palabra in termino.split())
+    # Las palabras de un término pueden ir separadas por cualquier espacio, y
+    # cada palabra acepta su plural con el sufijo opcional "s" o "es".
+    return r"\s+".join(re.escape(palabra) + r"(?:es|s)?" for palabra in termino.split())
 
 
-# Palabra completa, no subcadena: "ese filtro" no contiene "se filtro".
-# Cada término acepta además su plural con el sufijo opcional "s" o "es".
+# Término exacto: palabra completa, no subcadena ("ese filtro" no contiene
+# "se filtro"), con plural opcional en cada palabra.
+# Raíz: límite de palabra al inicio y cualquier terminación.
 _PATRON_TERMINOS = re.compile(
     r"\b(?:"
-    + "|".join(_patron_del_termino(_normalizar(t)) for t in TERMINOS_SEGURIDAD)
-    + r")(?:es|s)?\b"
+    + "|".join(
+        [_patron_del_termino(_normalizar(t)) for t in TERMINOS_SEGURIDAD]
+        + [re.escape(_normalizar(r)) + r"\w*" for r in RAICES_SEGURIDAD]
+    )
+    + r")\b"
 )
 
 

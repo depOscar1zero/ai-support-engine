@@ -122,7 +122,6 @@ def test_filtro_de_una_interfaz_con_categoria_feature_no_requiere_revision(mensa
         "Ese filtro no funciona",
         "Tengo un infiltrado en la lista de contactos",
         "Mi cuenta de vulnerabilidades_x no carga",
-        "Los hackeos_demo del tutorial",
     ],
 )
 def test_los_terminos_se_buscan_como_palabra_completa_no_como_subcadena(mensaje):
@@ -171,6 +170,44 @@ def test_cada_termino_acepta_el_sufijo_s_o_es(termino, sufijo):
 )
 def test_el_plural_no_rompe_el_limite_de_palabra(mensaje):
     assert requires_human_review(mensaje, resultado(Category.BUG)) is False
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    [
+        "Me hackearon la cuenta",
+        "Mi cuenta fue hackeada",
+        "Detectamos accesos no autorizados",
+    ],
+)
+def test_raiz_hacke_y_plural_en_cada_palabra_requieren_revision(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is True
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    ["Sufrimos un hackeo", "Hay que hackear esto", "Hubo hackeos", "Hackers en la red"],
+)
+def test_la_raiz_hacke_acepta_cualquier_terminacion(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is True
+
+
+def test_la_raiz_exige_limite_de_palabra_al_inicio():
+    assert requires_human_review("El archivo chackeado", resultado(Category.BUG)) is False
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    [
+        "Hubo accesos no autorizados",
+        "Un acceso no autorizado",
+        "Accesos no autorizado",
+        "Acceso no autorizados",
+        "Vimos contraseñas expuestas",
+    ],
+)
+def test_los_terminos_de_varias_palabras_aceptan_plural_en_cada_palabra(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is True
 
 
 def test_devuelve_un_booleano():

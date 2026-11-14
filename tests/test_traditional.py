@@ -135,6 +135,71 @@ def test_reconoce_formas_adicionales_de_filtracion(message):
     assert resultado.priority is Priority.CRITICAL
 
 
+@pytest.mark.parametrize(
+    "message",
+    [
+        "Me hackearon la cuenta",
+        "Mi cuenta fue hackeada",
+        "Hackearon mi cuenta",
+        "Alguien hackea mi correo",
+        "Sufrimos un hackeo",
+        "Hubo varios hackeos",
+    ],
+)
+def test_la_raiz_hacke_reconoce_las_formas_de_hackear(message):
+    resultado = analyze(message)
+
+    assert resultado.category is Category.SECURITY
+    assert resultado.priority is Priority.HIGH
+
+
+@pytest.mark.parametrize(
+    "message",
+    ["Mi cuenta está bloqueada", "Usuario bloqueado desde ayer"],
+)
+def test_la_raiz_bloquead_clasifica_como_acceso(message):
+    resultado = analyze(message)
+
+    assert resultado.category is Category.ACCESS
+    assert resultado.priority is Priority.MEDIUM
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        "Perdimos datos",
+        "Se perdió mi trabajo",
+        "Pérdida de datos importantes",
+        "Se cierran las ventanas",
+        "La app se cierra",
+    ],
+)
+def test_las_raices_perdi_y_se_cierr_suben_bug_a_high(message):
+    resultado = analyze(message)
+
+    assert resultado.category is Category.BUG
+    assert resultado.priority is Priority.HIGH
+
+
+def test_una_raiz_exige_limite_de_palabra_al_inicio():
+    # "chackeado" contiene "hacke" a mitad de palabra: no es una coincidencia.
+    resultado = analyze("El archivo chackeado no abre")
+
+    assert resultado.category is not Category.SECURITY
+
+
+def test_los_terminos_exactos_siguen_siendo_palabra_completa():
+    # "filtr" nunca fue raíz: "filtros avanzados" no es una filtración.
+    assert analyze("Ese filtro no funciona").category is not Category.SECURITY
+    assert analyze("filtros avanzados").category is not Category.SECURITY
+
+
+def test_una_raiz_y_un_termino_exacto_solapados_se_puntuan_una_sola_vez():
+    texto = normalizar("Sufrimos hackeos")
+
+    assert _puntuar_sin_solapamientos(texto, REGLAS[Category.SECURITY]) == 3
+
+
 def test_frases_de_seguridad_solapadas_se_puntuan_una_sola_vez():
     texto = normalizar("Creo que alguien cambió mi contraseña")
 
