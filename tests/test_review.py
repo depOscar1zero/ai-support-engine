@@ -4,7 +4,7 @@ Referencia: docs/02-contrato.md sección 4 y decisiones D2 y D3.
 """
 import pytest
 
-from app.review import requires_human_review
+from app.review import TERMINOS_SEGURIDAD, requires_human_review
 from app.schemas import Category, EngineResult, Priority
 
 TERMINOS_INICIALES = [
@@ -81,6 +81,96 @@ def test_cada_termino_inicial_activa_la_revision(termino, category):
 )
 def test_comparacion_ignora_mayusculas_y_acentos(mensaje):
     assert requires_human_review(mensaje, resultado(Category.FEATURE))
+
+
+TERMINOS_DE_FILTRACION = [
+    "se filtra",
+    "se filtran",
+    "se filtro",
+    "filtrando",
+    "filtrado",
+    "filtrados",
+    "filtraciones",
+]
+
+
+@pytest.mark.parametrize("termino", TERMINOS_DE_FILTRACION)
+def test_cada_termino_de_filtracion_activa_la_revision(termino):
+    mensaje = f"Aviso importante: {termino} en el sistema"
+
+    assert requires_human_review(mensaje, resultado(Category.BUG))
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    ["Se filtra información de clientes", "Se están filtrando datos de la base"],
+)
+def test_filtracion_en_presente_con_categoria_bug_requiere_revision(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is True
+
+
+@pytest.mark.parametrize(
+    "mensaje", ["Ese filtro no funciona", "Sería útil un filtro por fecha"]
+)
+def test_filtro_de_una_interfaz_con_categoria_feature_no_requiere_revision(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.FEATURE)) is False
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    [
+        "Ese filtro no funciona",
+        "Tengo un infiltrado en la lista de contactos",
+        "Mi cuenta de vulnerabilidades_x no carga",
+        "Los hackeos_demo del tutorial",
+    ],
+)
+def test_los_terminos_se_buscan_como_palabra_completa_no_como_subcadena(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is False
+
+
+def test_un_termino_de_varias_palabras_tolera_espacios_y_saltos_de_linea():
+    assert requires_human_review(
+        "Hubo acceso   no\nautorizado a mi cuenta", resultado(Category.BUG)
+    )
+
+
+def test_un_termino_pegado_a_signos_de_puntuacion_se_detecta():
+    assert requires_human_review("¡Phishing!", resultado(Category.BUG))
+    assert requires_human_review("(se filtra), creo", resultado(Category.BUG))
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    [
+        "Reportaron varias vulnerabilidades",
+        "Hubo dos brechas este mes",
+        "Detectamos hackeos",
+    ],
+)
+def test_los_terminos_aceptan_su_plural(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is True
+
+
+@pytest.mark.parametrize("sufijo", ["s", "es"])
+@pytest.mark.parametrize("termino", TERMINOS_SEGURIDAD)
+def test_cada_termino_acepta_el_sufijo_s_o_es(termino, sufijo):
+    mensaje = f"Aviso: {termino}{sufijo} en el sistema"
+
+    assert requires_human_review(mensaje, resultado(Category.BUG))
+
+
+@pytest.mark.parametrize(
+    "mensaje",
+    [
+        "Ese filtro no funciona",
+        "Ese filtros no funciona",
+        "Tengo vulnerabilidadesx en mi lista",
+        "Hay brechass de sobra",
+    ],
+)
+def test_el_plural_no_rompe_el_limite_de_palabra(mensaje):
+    assert requires_human_review(mensaje, resultado(Category.BUG)) is False
 
 
 def test_devuelve_un_booleano():
