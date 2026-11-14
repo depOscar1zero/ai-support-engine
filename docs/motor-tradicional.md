@@ -7,7 +7,9 @@ reglas deterministas. No utiliza modelos generativos ni realiza peticiones de re
 
 Antes de evaluar las reglas, el mensaje se convierte a minúsculas y se eliminan
 los acentos mediante normalización Unicode. De esta forma, por ejemplo, `sesión`
-y `sesion` producen la misma coincidencia.
+y `sesion` producen la misma coincidencia. Los términos se buscan como palabras
+o frases completas para evitar coincidencias accidentales dentro de otras
+palabras.
 
 ## Clasificación y puntuación
 
@@ -44,8 +46,8 @@ Cada categoría parte de una prioridad base:
 | `BUG` | `MEDIUM` |
 | `FEATURE` | `LOW` |
 
-Las formas completas de filtración (`filtracion`, `filtraron`, `se filtro`) o
-los términos de exposición general suben `SECURITY` a
+Las formas completas de filtración (incluidas formas en presente, participios y
+plurales) o los términos de exposición general suben `SECURITY` a
 `CRITICAL`. Los fallos que cierran la aplicación, provocan pérdida o impiden
 trabajar suben `BUG` a `HIGH`. Los problemas de acceso generales o urgentes
 suben `ACCESS` a `HIGH`. `FEATURE` permanece en `LOW`.

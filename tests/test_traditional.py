@@ -95,6 +95,31 @@ def test_filtro_de_feature_no_se_confunde_con_filtracion():
     assert resultado.priority is Priority.LOW
 
 
+def test_termino_de_seguridad_no_coincide_dentro_de_otras_palabras():
+    resultado = analyze("Ese filtro no funciona")
+
+    assert resultado.category is Category.BUG
+    assert resultado.priority is Priority.MEDIUM
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        "Se filtra información de clientes",
+        "Se filtran datos de clientes",
+        "Se están filtrando datos",
+        "El documento fue filtrado",
+        "Los documentos fueron filtrados",
+        "Detectamos filtraciones de datos",
+    ],
+)
+def test_reconoce_formas_adicionales_de_filtracion(message):
+    resultado = analyze(message)
+
+    assert resultado.category is Category.SECURITY
+    assert resultado.priority is Priority.CRITICAL
+
+
 def test_frases_de_seguridad_solapadas_se_puntuan_una_sola_vez():
     texto = normalizar("Creo que alguien cambió mi contraseña")
 

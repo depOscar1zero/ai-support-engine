@@ -1,5 +1,6 @@
 """Motor tradicional: clasificación por reglas, sin red ni modelo."""
 
+import re
 import unicodedata
 
 from app.schemas import Category, EngineResult, Priority
@@ -18,8 +19,14 @@ REGLAS = {
         "vulnerabilidad": 3,
         "hackea": 3,
         "filtracion": 3,
+        "filtraciones": 3,
         "filtraron": 3,
         "se filtro": 3,
+        "se filtra": 3,
+        "se filtran": 3,
+        "filtrando": 3,
+        "filtrado": 3,
+        "filtrados": 3,
         "phishing": 3,
         "sospechoso": 2,
         "acceso no autorizado": 3,
@@ -70,8 +77,14 @@ PRIORIDAD_BASE = {
 MODIFICADORES_PRIORIDAD = {
     Category.SECURITY: (
         "filtracion",
+        "filtraciones",
         "filtraron",
         "se filtro",
+        "se filtra",
+        "se filtran",
+        "filtrando",
+        "filtrado",
+        "filtrados",
         "datos de otros",
         "de otros clientes",
         "todos los usuarios",
@@ -113,7 +126,10 @@ def normalizar(texto: str) -> str:
 
 def clasificar(texto: str) -> Category:
     """Suma los pesos de cada coincidencia y resuelve empates por precedencia."""
-    if any(termino in texto for termino in TERMINOS_SEGURIDAD_FUERTES):
+    if any(
+        _buscar_termino(termino, texto)
+        for termino in TERMINOS_SEGURIDAD_FUERTES
+    ):
         return Category.SECURITY
 
     puntuaciones = {
@@ -136,9 +152,9 @@ def _puntuar_sin_solapamientos(texto: str, reglas: dict[str, int]) -> int:
     """Suma coincidencias distintas, sin contar dos frases superpuestas."""
     coincidencias = []
     for termino, peso in reglas.items():
-        inicio = texto.find(termino)
-        if inicio != -1:
-            coincidencias.append((inicio, inicio + len(termino), peso))
+        coincidencia = _buscar_termino(termino, texto)
+        if coincidencia:
+            coincidencias.append((coincidencia.start(), coincidencia.end(), peso))
 
     # Las frases más largas representan mejor una sola señal compuesta.
     coincidencias.sort(
@@ -159,9 +175,17 @@ def _puntuar_sin_solapamientos(texto: str, reglas: dict[str, int]) -> int:
     return puntuacion
 
 
+def _buscar_termino(termino: str, texto: str):
+    """Busca un término completo para evitar coincidencias dentro de palabras."""
+    return re.search(rf"\b{re.escape(termino)}\b", texto)
+
+
 def priorizar(texto: str, category: Category) -> Priority:
     """Aplica la prioridad base y los modificadores definidos para la categoría."""
-    if any(termino in texto for termino in MODIFICADORES_PRIORIDAD[category]):
+    if any(
+        _buscar_termino(termino, texto)
+        for termino in MODIFICADORES_PRIORIDAD[category]
+    ):
         if category is Category.SECURITY:
             return Priority.CRITICAL
         if category in (Category.ACCESS, Category.BUG):
