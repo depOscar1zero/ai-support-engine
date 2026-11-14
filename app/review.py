@@ -2,6 +2,7 @@
 
 Referencia: docs/02-contrato.md sección 4 y decisiones D2 y D3.
 """
+import re
 import unicodedata
 
 from app.schemas import Category, EngineResult
@@ -28,9 +29,28 @@ TERMINOS_SEGURIDAD = (
     "datos de otros",
     "contraseñas expuestas",
     "sospechoso",
+    "se filtra",
+    "se filtran",
+    "se filtro",
+    "filtrando",
+    "filtrado",
+    "filtrados",
+    "filtraciones",
 )
 
-_TERMINOS_NORMALIZADOS = tuple(_normalizar(t) for t in TERMINOS_SEGURIDAD)
+
+def _patron_del_termino(termino: str) -> str:
+    # Las palabras de un término pueden ir separadas por cualquier espacio.
+    return r"\s+".join(re.escape(palabra) for palabra in termino.split())
+
+
+# Palabra completa, no subcadena: "ese filtro" no contiene "se filtro".
+# Cada término acepta además su plural con el sufijo opcional "s" o "es".
+_PATRON_TERMINOS = re.compile(
+    r"\b(?:"
+    + "|".join(_patron_del_termino(_normalizar(t)) for t in TERMINOS_SEGURIDAD)
+    + r")(?:es|s)?\b"
+)
 
 
 def requires_human_review(message: str, result: EngineResult) -> bool:
@@ -38,5 +58,4 @@ def requires_human_review(message: str, result: EngineResult) -> bool:
     de seguridad, sin importar la categoría que haya devuelto el motor."""
     if result.category is Category.SECURITY:
         return True
-    texto = _normalizar(message)
-    return any(termino in texto for termino in _TERMINOS_NORMALIZADOS)
+    return _PATRON_TERMINOS.search(_normalizar(message)) is not None
