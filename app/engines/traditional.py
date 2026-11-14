@@ -14,11 +14,20 @@ PRECEDENCIA = (
     Category.FEATURE,
 )
 
+class Raiz(str):
+    """Término que coincide con cualquier palabra que empiece con este texto.
+
+    Un término normal (str) es una palabra o frase completa con plural
+    opcional. Una Raíz exige límite de palabra al inicio y admite cualquier
+    terminación.
+    """
+
+
 REGLAS = {
     Category.SECURITY: {
         "vulnerabilidad": 3,
         "brecha": 3,
-        "hackea": 3,
+        Raiz("hacke"): 3,
         "hackeo": 3,
         "filtracion": 3,
         "filtraciones": 3,
@@ -42,13 +51,13 @@ REGLAS = {
         "contrasena": 2,
         "login": 3,
         "no puedo entrar": 3,
-        "bloquead": 2,
+        Raiz("bloquead"): 2,
         "acceso": 1,
     },
     Category.BUG: {
         "error": 2,
         "falla": 2,
-        "se cierra": 3,
+        Raiz("se cierr"): 3,
         "no funciona": 2,
         "no carga": 2,
         "se congela": 3,
@@ -91,7 +100,7 @@ MODIFICADORES_PRIORIDAD = {
         "de otros clientes",
         "todos los usuarios",
     ),
-    Category.BUG: ("se cierra", "perdi", "no puedo trabajar"),
+    Category.BUG: (Raiz("se cierr"), Raiz("perdi"), "no puedo trabajar"),
     Category.ACCESS: ("todos", "urgente", "nadie puede"),
     Category.FEATURE: (),
 }
@@ -178,7 +187,13 @@ def _puntuar_sin_solapamientos(texto: str, reglas: dict[str, int]) -> int:
 
 
 def _buscar_termino(termino: str, texto: str):
-    """Busca un término completo, aceptando su plural regular."""
+    """Busca un término en el texto.
+
+    Término exacto: palabra completa con plural opcional.
+    Raíz: límite de palabra al inicio y cualquier terminación.
+    """
+    if isinstance(termino, Raiz):
+        return re.search(rf"\b{re.escape(termino)}\w*", texto)
     return re.search(rf"\b{re.escape(termino)}(?:s|es)?\b", texto)
 
 

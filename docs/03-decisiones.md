@@ -93,6 +93,7 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 - **Por qué:** con tres personas y cuatro días, un push equivocado a `main` puede romper el trabajo de los otros dos; el PR deja además evidencia de quién revisó qué.
 - **Costo aceptado:** cada cambio, por pequeño que sea, espera a que alguien lo apruebe.
 - **Alternativa descartada:** push directo a `main` para cambios "pequeños".
+
 ## D11 — Segundo conjunto de casos no vistos para medir generalización
  
 - **Fecha:** 14 de noviembre de 2026
@@ -106,3 +107,4 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 - **Límite conocido:** quien redacta los casos conoce el diseño general de ambos motores y vio el reporte de revisión del motor tradicional, así que la separación no es perfecta. Se declara en lugar de ocultarlo.
 - **Alternativa descartada:** quitar del motor las reglas que coinciden con los casos y seguir midiendo solo con los 12. No resuelve el problema de fondo: cualquier regla escrita después de ver los casos puede estar ajustada a ellos.
  
+ - **Corrección registrada (14 de noviembre de 2026):** antes de redactar los casos no vistos, Oscar aplicó una corrección mecánica al motor tradicional en `fix/raices-terminos`: cuatro términos que funcionaban como raíces (`hackea`, `bloquead`, `perdi`, `se cierra`) dejaron de coincidir al pasar a búsqueda por palabra completa, y se restauraron como raíces. No se cambiaron pesos, categorías ni lógica; el resultado sobre los 12 casos de referencia fue 12 de 12 antes y después. Revisó y aprobó Alejandro.

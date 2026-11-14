@@ -7,9 +7,28 @@ reglas deterministas. No utiliza modelos generativos ni realiza peticiones de re
 
 Antes de evaluar las reglas, el mensaje se convierte a minúsculas y se eliminan
 los acentos mediante normalización Unicode. De esta forma, por ejemplo, `sesión`
-y `sesion` producen la misma coincidencia. Los términos se buscan como palabras
-o frases completas para evitar coincidencias accidentales dentro de otras
-palabras. La búsqueda también acepta los sufijos regulares de plural `s` y `es`.
+y `sesion` producen la misma coincidencia.
+
+## Búsqueda de términos
+
+Las reglas usan dos tipos de término. Ambos exigen un límite de palabra al
+inicio, de modo que un término nunca coincide a mitad de otra palabra
+(`ese filtro` no contiene `se filtro`).
+
+- **Término exacto:** palabra o frase completa, con el sufijo de plural opcional
+  `s` o `es` al final. Es el caso de la mayoría de los términos, por ejemplo
+  `vulnerabilidad`, que también reconoce `vulnerabilidades`.
+- **Raíz:** límite de palabra al inicio y cualquier terminación. Sirve para
+  cubrir las conjugaciones y derivados de una misma palabra.
+
+Las raíces son cuatro:
+
+| Raíz | Dónde se usa | Cubre, por ejemplo |
+|---|---|---|
+| `hacke` | Término de `SECURITY` (peso 3) | `hackeo`, `hackear`, `hackearon`, `hackeada` |
+| `bloquead` | Término de `ACCESS` (peso 2) | `bloqueado`, `bloqueada` |
+| `se cierr` | Término de `BUG` (peso 3) y modificador que sube `BUG` a `HIGH` | `se cierra`, `se cierran` |
+| `perdi` | Modificador que sube `BUG` a `HIGH` | `perdimos`, `perdió`, `pérdida` |
 
 ## Clasificación y puntuación
 
@@ -66,3 +85,8 @@ pertenece a la API.
 El motor depende de coincidencias textuales. Puede no reconocer sinónimos que no
 estén incluidos, errores de escritura, expresiones nuevas, negaciones o sarcasmo.
 Tampoco interpreta el contexto con la flexibilidad de un modelo de lenguaje.
+
+Una raíz admite cualquier terminación, así que puede coincidir con palabras no
+relacionadas que empiecen igual. Por ejemplo, `perdi` coincide con `perdiz` y
+`hacke` con `hackers`. Ese costo se acepta a cambio de cubrir las distintas
+formas de una palabra.
