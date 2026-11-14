@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from app.engines.traditional import analyze, normalizar
+from app.engines.traditional import (
+    REGLAS,
+    _puntuar_sin_solapamientos,
+    analyze,
+    normalizar,
+)
 from app.schemas import Category, EngineResult, Priority
 
 
@@ -71,3 +76,26 @@ def test_security_nunca_baja_de_high():
 
     assert resultado.category is Category.SECURITY
     assert resultado.priority is Priority.HIGH
+
+
+def test_termino_fuerte_de_seguridad_prevalece_sobre_mayor_puntuacion_de_acceso():
+    resultado = analyze(
+        "Se filtraron datos de otros clientes. "
+        "No puedo iniciar sesión, login, contraseña"
+    )
+
+    assert resultado.category is Category.SECURITY
+    assert resultado.priority is Priority.CRITICAL
+
+
+def test_filtro_de_feature_no_se_confunde_con_filtracion():
+    resultado = analyze("Sería útil tener un filtro por fecha")
+
+    assert resultado.category is Category.FEATURE
+    assert resultado.priority is Priority.LOW
+
+
+def test_frases_de_seguridad_solapadas_se_puntuan_una_sola_vez():
+    texto = normalizar("Creo que alguien cambió mi contraseña")
+
+    assert _puntuar_sin_solapamientos(texto, REGLAS[Category.SECURITY]) == 3

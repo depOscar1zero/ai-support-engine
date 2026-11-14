@@ -25,6 +25,11 @@ Si varias categorías obtienen la misma puntuación, se usa esta precedencia:
 La precedencia favorece el tratamiento de un posible incidente de seguridad
 frente a una solicitud de acceso, un fallo o una sugerencia.
 
+Además, una señal fuerte de seguridad prevalece aunque otra categoría acumule
+más puntos. Las coincidencias solapadas dentro de una categoría se consideran
+una sola señal y se conserva la frase más larga, evitando puntuar dos veces una
+misma expresión compuesta.
+
 Si ningún término coincide, el motor devuelve `BUG` con prioridad `MEDIUM`.
 Este comportamiento predeterminado es una limitación conocida del enfoque.
 
@@ -39,7 +44,8 @@ Cada categoría parte de una prioridad base:
 | `BUG` | `MEDIUM` |
 | `FEATURE` | `LOW` |
 
-Los términos de filtración o exposición general suben `SECURITY` a
+Las formas completas de filtración (`filtracion`, `filtraron`, `se filtro`) o
+los términos de exposición general suben `SECURITY` a
 `CRITICAL`. Los fallos que cierran la aplicación, provocan pérdida o impiden
 trabajar suben `BUG` a `HIGH`. Los problemas de acceso generales o urgentes
 suben `ACCESS` a `HIGH`. `FEATURE` permanece en `LOW`.

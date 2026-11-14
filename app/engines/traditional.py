@@ -17,7 +17,9 @@ REGLAS = {
     Category.SECURITY: {
         "vulnerabilidad": 3,
         "hackea": 3,
-        "filtr": 3,
+        "filtracion": 3,
+        "filtraron": 3,
+        "se filtro": 3,
         "phishing": 3,
         "sospechoso": 2,
         "acceso no autorizado": 3,
@@ -52,6 +54,12 @@ REGLAS = {
     },
 }
 
+# Una coincidencia de peso 3 representa una señal fuerte de seguridad. Ante
+# una de estas señales, SECURITY prevalece aunque otra categoría sume más.
+TERMINOS_SEGURIDAD_FUERTES = tuple(
+    termino for termino, peso in REGLAS[Category.SECURITY].items() if peso == 3
+)
+
 PRIORIDAD_BASE = {
     Category.SECURITY: Priority.HIGH,
     Category.ACCESS: Priority.MEDIUM,
@@ -60,7 +68,14 @@ PRIORIDAD_BASE = {
 }
 
 MODIFICADORES_PRIORIDAD = {
-    Category.SECURITY: ("filtr", "datos de otros", "de otros clientes", "todos los usuarios"),
+    Category.SECURITY: (
+        "filtracion",
+        "filtraron",
+        "se filtro",
+        "datos de otros",
+        "de otros clientes",
+        "todos los usuarios",
+    ),
     Category.BUG: ("se cierra", "perdi", "no puedo trabajar"),
     Category.ACCESS: ("todos", "urgente", "nadie puede"),
     Category.FEATURE: (),
@@ -98,10 +113,11 @@ def normalizar(texto: str) -> str:
 
 def clasificar(texto: str) -> Category:
     """Suma los pesos de cada coincidencia y resuelve empates por precedencia."""
+    if any(termino in texto for termino in TERMINOS_SEGURIDAD_FUERTES):
+        return Category.SECURITY
+
     puntuaciones = {
-        categoria: sum(
-            peso for termino, peso in REGLAS[categoria].items() if termino in texto
-        )
+        categoria: _puntuar_sin_solapamientos(texto, REGLAS[categoria])
         for categoria in PRECEDENCIA
     }
 
@@ -114,6 +130,33 @@ def clasificar(texto: str) -> Category:
         for categoria in PRECEDENCIA
         if puntuaciones[categoria] == mayor_puntuacion
     )
+
+
+def _puntuar_sin_solapamientos(texto: str, reglas: dict[str, int]) -> int:
+    """Suma coincidencias distintas, sin contar dos frases superpuestas."""
+    coincidencias = []
+    for termino, peso in reglas.items():
+        inicio = texto.find(termino)
+        if inicio != -1:
+            coincidencias.append((inicio, inicio + len(termino), peso))
+
+    # Las frases más largas representan mejor una sola señal compuesta.
+    coincidencias.sort(
+        key=lambda coincidencia: coincidencia[1] - coincidencia[0],
+        reverse=True,
+    )
+    seleccionadas = []
+    puntuacion = 0
+    for inicio, fin, peso in coincidencias:
+        if any(
+            inicio < otro_fin and otro_inicio < fin
+            for otro_inicio, otro_fin in seleccionadas
+        ):
+            continue
+        seleccionadas.append((inicio, fin))
+        puntuacion += peso
+
+    return puntuacion
 
 
 def priorizar(texto: str, category: Category) -> Priority:
