@@ -17,6 +17,8 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 | D7 | API key en `.env`, fuera del repositorio | Aprobada |
 | D8 | La clasificación de referencia se define antes de programar | Aprobada |
 | D9 | El login de la demo es solo visual | Propuesta |
+| D10 | `main` nunca se toca: todo entra por pull request | Aprobada |
+| D11 | Segundo conjunto de casos no vistos para medir generalización | Aprobada |
 
 ## D1 — Una función `analyze()` por motor con un tipo de retorno común
 
@@ -83,3 +85,24 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 - **Decisión:** el login y los comentarios existen para la demo en vivo; no hay autenticación real ni protegen la API.
 - **Por qué:** no es requisito y no hay tiempo de hacerlo seguro antes del lunes; se declara abiertamente en lugar de aparentar seguridad.
 - **Alternativa descartada:** autenticación real con usuarios.
+
+## D10 — `main` nunca se toca: todo entra por pull request
+ 
+- **Fecha:** 12 de noviembre de 2026
+- **Decisión:** nadie hace push directo a `main`, ni siquiera el dueño del repositorio. Cada cambio va en su rama y entra por pull request con la aprobación de un compañero. La rama está protegida en GitHub.
+- **Por qué:** con tres personas y cuatro días, un push equivocado a `main` puede romper el trabajo de los otros dos; el PR deja además evidencia de quién revisó qué.
+- **Costo aceptado:** cada cambio, por pequeño que sea, espera a que alguien lo apruebe.
+- **Alternativa descartada:** push directo a `main` para cambios "pequeños".
+## D11 — Segundo conjunto de casos no vistos para medir generalización
+ 
+- **Fecha:** 14 de noviembre de 2026
+- **Contexto:** al revisar el motor tradicional, 18 de sus 38 términos coincidían con frases de `tests/cases.json` y el motor acertaba 12 de 12. Parte del traslape viene de que los ejemplos de reglas y los casos de referencia se redactaron juntos. Con ese traslape, el porcentaje sobre los 12 casos no distingue entre un motor que generaliza y uno ajustado a la referencia.
+- **Decisión:** se agrega `tests/cases_no_vistos.json` con 8 a 10 casos nuevos.
+  - Los redacta Oscar, que no es autor de ningún motor, sin consultar las reglas ni el prompt.
+  - Se congela por pull request **después** de que ambos motores estén fusionados en `main`.
+  - Una vez congelado, los motores no se modifican para mejorar el resultado. Solo se admiten correcciones de errores, anotadas en este documento.
+  - La comparativa reporta dos porcentajes por motor: casos de referencia y casos no vistos.
+- **Por qué:** mide generalización real y hace defendible el resultado ante quien califica.
+- **Límite conocido:** quien redacta los casos conoce el diseño general de ambos motores y vio el reporte de revisión del motor tradicional, así que la separación no es perfecta. Se declara en lugar de ocultarlo.
+- **Alternativa descartada:** quitar del motor las reglas que coinciden con los casos y seguir midiendo solo con los 12. No resuelve el problema de fondo: cualquier regla escrita después de ver los casos puede estar ajustada a ellos.
+ 
