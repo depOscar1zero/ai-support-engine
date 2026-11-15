@@ -10,7 +10,7 @@ Documentos relacionados: [Contrato](02-contrato.md) · [Registro de decisiones](
 Una empresa recibe 3,000 solicitudes de soporte al día y una persona las lee, clasifica, prioriza y responde a mano. Construimos un prototipo que automatiza esa primera pasada con dos motores intercambiables, para comparar qué tan bien lo hace cada uno:
 
 - **Motor tradicional:** reglas y condiciones en Python, sin modelo generativo.
-- **Motor generativo:** Gemini 3.8 Flash mediante API (`gemini-3.8-flash`).
+- **Motor generativo:** Gemini 3.1 Flash-Lite mediante API (`gemini-3.1-flash-lite`).
 
 Se califica el repositorio, una demo en vivo y la evidencia de decisiones en `docs/`.
 

@@ -3,7 +3,7 @@
 Prototipo de clasificación inteligente de solicitudes de soporte. Compara dos enfoques sobre el mismo contrato de API:
  
 - **Motor tradicional:** reglas y condiciones en Python, sin modelo generativo.
-- **Motor generativo:** Gemini 3.8 Flash mediante API.
+- **Motor generativo:** Gemini 3.1 Flash-Lite mediante API.
 Cada solicitud recibe una categoría (`ACCESS`, `BUG`, `FEATURE`, `SECURITY`), una prioridad (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`), una respuesta para el usuario y una marca de revisión humana.
  
 > **Estado:** en desarrollo. Entrega: lunes 16 de noviembre de 2026.
@@ -51,7 +51,7 @@ Copia `.env.example` como `.env` y coloca tu API key de Gemini:
  
 ```
 GEMINI_API_KEY=tu_key
-GEMINI_MODEL=gemini-3.8-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 ```
  
 El archivo `.env` está ignorado por git. **Nunca subas la key al repositorio.**
