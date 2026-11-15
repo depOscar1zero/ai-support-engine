@@ -49,7 +49,7 @@ def _get_client():
             raise EngineError("Falta configurar el proveedor.")
         _client = genai.Client(
             api_key=key,
-            http_options=types.HttpOptions(timeout=30000),
+            http_options=types.HttpOptions(timeout=60000),
         )
     return _client
 
@@ -67,10 +67,10 @@ def analyze(message: str) -> EngineResult:
         )
     except EngineError:
         raise
-    except Exception as e:
-        raise EngineError("El proveedor no respondió.") from e
+    except Exception:
+        raise EngineError("El proveedor no respondió.") from None
 
     try:
         return EngineResult.model_validate_json(r.text or "")
-    except ValidationError as e:
-        raise EngineError("El proveedor devolvió un formato inválido.") from e
+    except ValidationError:
+        raise EngineError("El proveedor devolvió un formato inválido.") from None
