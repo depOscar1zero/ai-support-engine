@@ -19,6 +19,7 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 | D9 | El login de la demo es solo visual | Propuesta |
 | D10 | `main` nunca se toca: todo entra por pull request | Aprobada |
 | D11 | Segundo conjunto de casos no vistos para medir generalización | Aprobada |
+| D12 | Modelo generativo: gemini-3.1-flash-lite en lugar de gemini-3.8-flash | Aprobada |
 
 ## D1 — Una función `analyze()` por motor con un tipo de retorno común
 
@@ -106,5 +107,15 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 - **Por qué:** mide generalización real y hace defendible el resultado ante quien califica.
 - **Límite conocido:** quien redacta los casos conoce el diseño general de ambos motores y vio el reporte de revisión del motor tradicional, así que la separación no es perfecta. Se declara en lugar de ocultarlo.
 - **Alternativa descartada:** quitar del motor las reglas que coinciden con los casos y seguir midiendo solo con los 12. No resuelve el problema de fondo: cualquier regla escrita después de ver los casos puede estar ajustada a ellos.
- 
  - **Corrección registrada (14 de noviembre de 2026):** antes de redactar los casos no vistos, Oscar aplicó una corrección mecánica al motor tradicional en `fix/raices-terminos`: cuatro términos que funcionaban como raíces (`hackea`, `bloquead`, `perdi`, `se cierra`) dejaron de coincidir al pasar a búsqueda por palabra completa, y se restauraron como raíces. No se cambiaron pesos, categorías ni lógica; el resultado sobre los 12 casos de referencia fue 12 de 12 antes y después. Revisó y aprobó Alejandro.
+
+
+## D12 — Modelo generativo: gemini-3.1-flash-lite en lugar de gemini-3.8-flash
+
+- **Fecha:** 15 de noviembre de 2026
+- **Contexto:** el 14 y 15 de noviembre, `gemini-3.8-flash` respondió casi siempre con 504 DEADLINE_EXCEEDED (a los ~58 s) y 503 por alta demanda, desde dos API keys distintas. Se probó la llamada tal como la hace el motor, con nivel de razonamiento bajo y sin esquema de salida: las tres variantes fallaron igual, así que la causa no es el código ni la configuración.
+- **Decisión:** usar `gemini-3.1-flash-lite`, que respondió de forma estable (las 3 pruebas con internet pasaron en 4.9 s). El cambio es solo la variable `GEMINI_MODEL`; el motor no se modificó.
+- **Por qué:** el proyecto pide un modelo generativo mediante API, sin fijar cuál; la comparativa y la demo necesitan un modelo que responda.
+- **Costo aceptado:** un modelo "lite" puede clasificar peor los casos ambiguos y adversariales. Si ocurre, se reporta tal cual en `docs/resultados.md`.
+- **Alternativa descartada:** mantener `gemini-3.8-flash` con reintentos. Con fallos de casi 60 s por llamada, la comparativa tardaría demasiado y la demo en vivo no sería confiable.
+ 

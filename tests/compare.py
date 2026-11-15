@@ -27,7 +27,7 @@ CASOS_NO_VISTOS = RAIZ / "tests" / "cases_no_vistos.json"
 SALIDA = RAIZ / "docs" / "resultados.md"
 
 MODOS = ("traditional", "generative")
-MODELO_POR_DEFECTO = "gemini-3.8-flash"
+MODELO_POR_DEFECTO = "gemini-3.1-flash-lite"
 CAMPOS_CASO = ("message", "expectedCategory", "expectedPriority", "type")
 LARGO_MENSAJE_EN_LISTA = 80
 

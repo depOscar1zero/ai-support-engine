@@ -57,7 +57,7 @@ def _get_client():
 def analyze(message: str) -> EngineResult:
     try:
         r = _get_client().models.generate_content(
-            model=os.environ.get("GEMINI_MODEL", "gemini-3.8-flash"),
+            model=os.environ.get("GEMINI_MODEL", "gemini-3.1-flash-lite"),
             contents=message,
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM,
