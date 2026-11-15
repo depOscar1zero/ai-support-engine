@@ -100,10 +100,13 @@ python -m tests.compare   # comparativa de ambos motores
 Los resultados de la comparativa se guardan en `docs/resultados.md`.
  
 ## 📚 Documentación
- 
+
 - [Arquitectura](docs/01-arquitectura.md)
 - [Contrato](docs/02-contrato.md)
 - [Registro de decisiones](docs/03-decisiones.md)
+- [Resultados de la comparativa](docs/resultados.md)
+- [Análisis de resultados](docs/04-analisis.md)
+
 ## 🌿 Flujo de trabajo
  
 - `main` nunca se toca directamente: todo entra por pull request con la aprobación de un compañero.
