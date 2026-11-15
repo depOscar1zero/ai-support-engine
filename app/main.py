@@ -5,11 +5,13 @@ decisiones D2 (revisión humana por código) y D4 (502 sin detalles).
 """
 import logging
 import os
+from pathlib import Path
 from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from app.engines import generative, traditional
@@ -31,6 +33,8 @@ ORIGENES_POR_DEFECTO = (
     "http://127.0.0.1:8000",
 )
 HOSTS_LOCALES = {"localhost", "127.0.0.1", "::1"}
+
+DIRECTORIO_FRONTEND = Path(__file__).resolve().parent.parent / "frontend"
 
 # Mensaje fijo: nunca incluye detalles del motor ni del proveedor (D4).
 MENSAJE_502 = "El servicio de análisis no está disponible. Intente de nuevo más tarde."
@@ -129,3 +133,9 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         requiresHumanReview=requires_human_review(request.message, result),
         mode=request.mode,
     )
+
+
+# La demo web se sirve en la raíz como manejador por defecto del router: solo
+# atiende lo que ninguna ruta de la API reconoce. Un mount en "/" captura todo
+# y cambiaría, por ejemplo, el 405 de GET /api/analyze por un 404.
+app.router.default = StaticFiles(directory=DIRECTORIO_FRONTEND, html=True)
