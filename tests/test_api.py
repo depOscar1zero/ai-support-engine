@@ -7,7 +7,7 @@ import logging
 import pytest
 from fastapi.testclient import TestClient
 
-from app.engines import EngineError, generative, traditional
+from app.engines import EngineError, generative, ml, traditional
 from app.main import MENSAJE_502, app, origenes_permitidos
 from app.schemas import Category, EngineResult, Priority
 
@@ -28,9 +28,10 @@ def resultado(category=Category.FEATURE, response="Gracias.") -> EngineResult:
 
 @pytest.fixture(autouse=True)
 def motores_falsos(monkeypatch):
-    """Ningún test llega a un motor real: ambos devuelven FEATURE por defecto."""
+    """Ningún test llega a un motor real: todos devuelven FEATURE por defecto."""
     monkeypatch.setattr(traditional, "analyze", lambda message: resultado())
     monkeypatch.setattr(generative, "analyze", lambda message: resultado())
+    monkeypatch.setattr(ml, "analyze", lambda message: resultado())
 
 
 @pytest.fixture
@@ -45,7 +46,7 @@ def post(client, message="No puedo iniciar sesión", mode="traditional"):
 # --- 200 -------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("mode", ["traditional", "generative"])
+@pytest.mark.parametrize("mode", ["traditional", "generative", "ml"])
 def test_peticion_valida_devuelve_200_con_los_cinco_campos(client, mode):
     response = post(client, mode=mode)
 
@@ -53,7 +54,7 @@ def test_peticion_valida_devuelve_200_con_los_cinco_campos(client, mode):
     assert set(response.json()) == CAMPOS_RESPUESTA
 
 
-@pytest.mark.parametrize("mode", ["traditional", "generative"])
+@pytest.mark.parametrize("mode", ["traditional", "generative", "ml"])
 def test_mode_de_la_respuesta_coincide_con_el_pedido(client, mode):
     assert post(client, mode=mode).json()["mode"] == mode
 
@@ -65,9 +66,13 @@ def test_cada_mode_usa_su_propio_motor(client, monkeypatch):
     monkeypatch.setattr(
         generative, "analyze", lambda message: resultado(response="del generativo")
     )
+    monkeypatch.setattr(
+        ml, "analyze", lambda message: resultado(response="del machine learning")
+    )
 
     assert post(client, mode="traditional").json()["response"] == "del tradicional"
     assert post(client, mode="generative").json()["response"] == "del generativo"
+    assert post(client, mode="ml").json()["response"] == "del machine learning"
 
 
 def test_el_motor_recibe_el_mensaje_ya_normalizado_por_el_contrato(
@@ -126,7 +131,7 @@ def test_peticion_invalida_no_llega_al_motor(client, monkeypatch):
 # --- 502 (D4) --------------------------------------------------------------
 
 
-@pytest.mark.parametrize("mode", ["traditional", "generative"])
+@pytest.mark.parametrize("mode", ["traditional", "generative", "ml"])
 def test_engine_error_devuelve_502_sin_el_mensaje_interno(
     client, monkeypatch, mode
 ):
@@ -135,6 +140,7 @@ def test_engine_error_devuelve_502_sin_el_mensaje_interno(
 
     monkeypatch.setattr(traditional, "analyze", falla)
     monkeypatch.setattr(generative, "analyze", falla)
+    monkeypatch.setattr(ml, "analyze", falla)
 
     response = post(client, mode=mode)
 
@@ -143,7 +149,7 @@ def test_engine_error_devuelve_502_sin_el_mensaje_interno(
     assert isinstance(response.json()["detail"], str)
 
 
-@pytest.mark.parametrize("mode", ["traditional", "generative"])
+@pytest.mark.parametrize("mode", ["traditional", "generative", "ml"])
 def test_not_implemented_error_devuelve_502_sin_el_mensaje_interno(
     client, monkeypatch, mode
 ):
@@ -152,6 +158,7 @@ def test_not_implemented_error_devuelve_502_sin_el_mensaje_interno(
 
     monkeypatch.setattr(traditional, "analyze", pendiente)
     monkeypatch.setattr(generative, "analyze", pendiente)
+    monkeypatch.setattr(ml, "analyze", pendiente)
 
     response = post(client, mode=mode)
 
@@ -183,7 +190,7 @@ def test_engine_error_encadenado_no_filtra_la_clave_ni_en_cuerpo_ni_en_logs(
     assert all(CLAVE_FALSA not in r.getMessage() for r in caplog.records)
 
 
-@pytest.mark.parametrize("mode", ["traditional", "generative"])
+@pytest.mark.parametrize("mode", ["traditional", "generative", "ml"])
 def test_excepcion_inesperada_devuelve_502_y_no_filtra_la_clave(
     client, monkeypatch, caplog, capsys, mode
 ):
@@ -192,6 +199,7 @@ def test_excepcion_inesperada_devuelve_502_y_no_filtra_la_clave(
 
     monkeypatch.setattr(traditional, "analyze", falla)
     monkeypatch.setattr(generative, "analyze", falla)
+    monkeypatch.setattr(ml, "analyze", falla)
 
     with caplog.at_level(logging.DEBUG):
         response = post(client, mode=mode)

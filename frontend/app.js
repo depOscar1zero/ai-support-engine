@@ -27,7 +27,8 @@
   };
   var MODE_LABELS = {
     traditional: "Tradicional (reglas)",
-    generative: "Generativo (Gemini)"
+    generative: "Generativo (Gemini)",
+    ml: "Machine Learning"
   };
 
   var MESSAGES = {

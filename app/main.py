@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app.engines import generative, traditional
+from app.engines import generative, ml, traditional
 from app.review import requires_human_review
 from app.schemas import AnalyzeRequest, AnalyzeResponse, EngineResult, Mode
 
@@ -43,6 +43,7 @@ MENSAJE_502 = "El servicio de análisis no está disponible. Intente de nuevo m�
 _MOTORES = {
     Mode.traditional: traditional,
     Mode.generative: generative,
+    Mode.ml: ml,
 }
 
 

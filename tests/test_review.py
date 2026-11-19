@@ -49,6 +49,13 @@ def test_feature_sin_terminos_no_requiere_revision():
     )
 
 
+def test_sin_autorizacion_requiere_revision_aunque_ml_clasifique_access():
+    assert requires_human_review(
+        "Alguien entró a mi cuenta sin autorización",
+        resultado(Category.ACCESS),
+    )
+
+
 @pytest.mark.parametrize(
     "category", [Category.ACCESS, Category.BUG, Category.FEATURE]
 )

@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 import pytest
 from fastapi.testclient import TestClient
 
-from app.engines import generative, traditional
+from app.engines import generative, ml, traditional
 from app.main import app
 from app.schemas import Category, EngineResult, Priority
 from tests import compare
@@ -63,6 +63,7 @@ def motor_falso(message):
 def motores_falsos(monkeypatch):
     monkeypatch.setattr(traditional, "analyze", motor_falso)
     monkeypatch.setattr(generative, "analyze", motor_falso)
+    monkeypatch.setattr(ml, "analyze", motor_falso)
 
 
 @pytest.fixture
@@ -290,10 +291,10 @@ def test_el_conteo_coincide_con_los_archivos(client, tmp_path):
     for modo in compare.MODOS:
         assert corrida["resumen"][(modo, "referencia")]["casos"] == len(CASOS)
         assert corrida["resumen"][(modo, "no vistos")]["casos"] == len(no_vistos)
-    assert len(corrida["registros"]) == (len(CASOS) + len(no_vistos)) * 2
+    assert len(corrida["registros"]) == (len(CASOS) + len(no_vistos)) * 3
     informe = texto(corrida)
-    assert informe.count("referencia (5 casos)") == 2
-    assert informe.count("no vistos (3 casos)") == 2
+    assert informe.count("referencia (5 casos)") == 3
+    assert informe.count("no vistos (3 casos)") == 3
 
 
 def test_el_conteo_coincide_con_el_cases_json_real(client, tmp_path, monkeypatch):

@@ -7,18 +7,19 @@ Documentos relacionados: [Contrato](02-contrato.md) · [Registro de decisiones](
 
 ## 1. Qué construimos y por qué
 
-Una empresa recibe 3,000 solicitudes de soporte al día y una persona las lee, clasifica, prioriza y responde a mano. Construimos un prototipo que automatiza esa primera pasada con dos motores intercambiables, para comparar qué tan bien lo hace cada uno:
+Una empresa recibe 3,000 solicitudes de soporte al día y una persona las lee, clasifica, prioriza y responde a mano. Construimos un prototipo que automatiza esa primera pasada con tres motores intercambiables, para comparar qué tan bien lo hace cada uno:
 
 - **Motor tradicional:** reglas y condiciones en Python, sin modelo generativo.
 - **Motor generativo:** Gemini 3.1 Flash-Lite mediante API (`gemini-3.1-flash-lite`).
+- **Motor ML:** TF-IDF y regresión logística entrenados fuera del proceso de la API.
 
 Se califica el repositorio, una demo en vivo y la evidencia de decisiones en `docs/`.
 
 ## 2. Alcance
 
 **Objetivos**
-- `POST /api/analyze` funcional con `mode` = `traditional` | `generative`.
-- Ambos motores cumplen el mismo contrato de respuesta.
+- `POST /api/analyze` funcional con `mode` = `traditional` | `generative` | `ml`.
+- Los tres motores cumplen el mismo contrato de respuesta.
 - Validación de entrada, manejo de errores del proveedor y verificación del formato generativo.
 - Revisión humana obligatoria para posibles incidentes de seguridad.
 - Comparativa con 10+ solicitudes y porcentaje de aciertos por motor.
@@ -43,7 +44,8 @@ Cliente (demo web / curl)
    app/main.py ── valida con Pydantic (422 si es inválido)
         │
         ├─ mode=traditional → engines/traditional.py ─┐
-        └─ mode=generative  → engines/generative.py ──┤→ EngineResult
+        ├─ mode=generative  → engines/generative.py ──┤→ EngineResult
+        └─ mode=ml          → engines/ml.py ──────────┘
                                    │ (Gemini API)      │
                                    ▼                   ▼
                           error o JSON inválido   app/review.py
@@ -61,6 +63,8 @@ Cliente (demo web / curl)
 | `app/review.py` | Decide `requiresHumanReview` con reglas de código | Oscar |
 | `app/engines/traditional.py` | Clasificación por reglas, sin red ni modelo | Alejandro |
 | `app/engines/generative.py` | Llamada a Gemini y verificación de su salida | Lilia (con apoyo de Oscar) |
+| `app/engines/ml.py` | Carga diferida e inferencia del modelo entrenado | Equipo |
+| `scripts/train_ml.py` | Validación del dataset, entrenamiento y métricas | Equipo |
 | `frontend/` | Demo visual | Lilia (diseño) · Oscar (conexión) |
 | `tests/` | Casos de referencia y comparativa | Oscar, con casos definidos por los tres |
 
@@ -75,10 +79,17 @@ app/
     __init__.py       define EngineError
     traditional.py
     generative.py
+    ml.py
+scripts/
+  train_ml.py
+data/
+  tickets.csv         dataset etiquetado de entrenamiento
+models/
+  ticket_classifier.joblib  generado, ignorado por Git
 frontend/
 tests/
   cases.json          casos con clasificación de referencia
-  compare.py          ejecuta ambos motores y calcula el %
+  compare.py          ejecuta los motores y calcula el %
 docs/
 .env.example          nombres de variables, sin valores reales
 .gitignore            incluye .env

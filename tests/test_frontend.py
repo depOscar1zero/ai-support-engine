@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from app.engines import generative, traditional
+from app.engines import generative, ml, traditional
 from app.main import app
 from app.schemas import Category, EngineResult, Priority
 
@@ -53,6 +53,7 @@ def motores_falsos(monkeypatch):
     )
     monkeypatch.setattr(traditional, "analyze", lambda message: res)
     monkeypatch.setattr(generative, "analyze", lambda message: res)
+    monkeypatch.setattr(ml, "analyze", lambda message: res)
 
 
 @pytest.fixture
@@ -179,6 +180,13 @@ def test_el_textarea_usa_el_maximo_del_contrato(html):
     texto, _ = html
 
     assert 'maxlength="2000"' in texto
+
+
+def test_el_frontend_ofrece_el_motor_ml(html):
+    texto, _ = html
+
+    assert '<option value="ml">Machine Learning</option>' in texto
+    assert 'ml: "Machine Learning"' in (FRONTEND / "app.js").read_text(encoding="utf-8")
 
 
 def test_el_html_no_trae_estilos_en_linea(html):
