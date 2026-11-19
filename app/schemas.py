@@ -25,6 +25,7 @@ class Priority(str, Enum):
 class Mode(str, Enum):
     traditional = "traditional"
     generative = "generative"
+    ml = "ml"
 
 
 class AnalyzeRequest(BaseModel):

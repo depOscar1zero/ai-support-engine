@@ -24,6 +24,7 @@ TERMINOS_SEGURIDAD = (
     "malware",
     "ransomware",
     "acceso no autorizado",
+    "sin autorización",
     "datos de otros",
     "contraseñas expuestas",
     "sospechoso",

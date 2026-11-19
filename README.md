@@ -1,9 +1,10 @@
 # 🤖 AI Support Engine
  
-Prototipo de clasificación inteligente de solicitudes de soporte. Compara dos enfoques sobre el mismo contrato de API:
+Prototipo de clasificación inteligente de solicitudes de soporte. Compara tres enfoques sobre el mismo contrato de API:
  
 - **Motor tradicional:** reglas y condiciones en Python, sin modelo generativo.
 - **Motor generativo:** Gemini 3.1 Flash-Lite mediante API.
+- **Motor ML:** TF-IDF y regresión logística entrenados con tickets etiquetados.
 Cada solicitud recibe una categoría (`ACCESS`, `BUG`, `FEATURE`, `SECURITY`), una prioridad (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`), una respuesta para el usuario y una marca de revisión humana.
  
 > **Estado:** en desarrollo. Entrega: lunes 16 de noviembre de 2026.
@@ -26,10 +27,16 @@ app/
   engines/
     traditional.py    motor de reglas
     generative.py     motor con Gemini
+    ml.py             inferencia del modelo entrenado
+scripts/
+  train_ml.py         validación, entrenamiento y evaluación
+data/
+  tickets.csv         dataset etiquetado para entrenamiento
+models/               artefactos entrenados (ignorados por Git)
 frontend/             demo visual
 tests/
   cases.json          casos con clasificación de referencia
-  compare.py          comparativa de ambos motores
+  compare.py          comparativa de los motores
 docs/                 arquitectura, contrato y decisiones
 ```
  
@@ -55,6 +62,23 @@ GEMINI_MODEL=gemini-3.1-flash-lite
 ```
  
 El archivo `.env` está ignorado por git. **Nunca subas la key al repositorio.**
+
+## Entrenamiento del motor ML
+
+El dataset está en `data/tickets.csv`. Debe tener las columnas
+`message` y `category`; las categorías permitidas son `ACCESS`, `BUG`,
+`FEATURE` y `SECURITY`. El artefacto entrenado está ignorado por Git porque es
+un binario generado y puede reproducirse desde el CSV.
+
+```bash
+python -m scripts.train_ml --validate-only
+python -m scripts.train_ml
+```
+
+El primer comando comprueba el archivo sin entrenar. El segundo vuelve a
+validarlo, impide usar los casos reservados de evaluación, imprime las métricas
+y genera `models/ticket_classifier.joblib`. Es posible usar otra ruta de
+inferencia mediante `ML_MODEL_PATH`.
  
 ## ▶️ Ejecución
  
@@ -82,19 +106,19 @@ curl -X POST http://127.0.0.1:8000/api/analyze \
 }
 ```
  
-`mode` acepta `traditional` y `generative`. Ambos devuelven el mismo formato.
+`mode` acepta `traditional`, `generative` y `ml`. Todos devuelven el mismo formato.
  
 | Código | Significado |
 |---|---|
 | 200 | Análisis correcto |
 | 422 | Petición inválida |
-| 502 | El motor generativo falló o devolvió un formato inválido |
+| 502 | El motor seleccionado falló o no pudo producir un resultado válido |
  
 ## 🧪 Pruebas
  
 ```bash
 pytest                    # pruebas unitarias
-python -m tests.compare   # comparativa de ambos motores
+python -m tests.compare   # comparativa de los tres motores
 ```
  
 Los resultados de la comparativa se guardan en `docs/resultados.md`.
@@ -104,6 +128,8 @@ Los resultados de la comparativa se guardan en `docs/resultados.md`.
 - [Arquitectura](docs/01-arquitectura.md)
 - [Contrato](docs/02-contrato.md)
 - [Registro de decisiones](docs/03-decisiones.md)
+- [Motor de Machine Learning](docs/motor-ml.md)
+- [Resultados del motor ML](docs/resultados-ml.md)
 - [Resultados de la comparativa](docs/resultados.md)
 - [Análisis de resultados](docs/04-analisis.md)
 

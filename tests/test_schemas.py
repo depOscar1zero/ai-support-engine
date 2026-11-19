@@ -23,7 +23,7 @@ def campos_con_error(exc_info) -> set[str]:
 # --- AnalyzeRequest --------------------------------------------------------
 
 
-@pytest.mark.parametrize("mode", ["traditional", "generative"])
+@pytest.mark.parametrize("mode", ["traditional", "generative", "ml"])
 def test_peticion_valida(mode):
     req = AnalyzeRequest(message="No puedo iniciar sesión", mode=mode)
 

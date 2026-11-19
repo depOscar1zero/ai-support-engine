@@ -1,7 +1,7 @@
-"""Comparativa de los dos motores contra los casos de evaluación.
+"""Comparativa de los motores contra los casos de evaluación.
 
 Uso:
-    python -m tests.compare [--mode traditional|generative] [--delay 3]
+    python -m tests.compare [--mode traditional|generative|ml] [--delay 3]
 
 Llama a POST /api/analyze (con TestClient) por cada caso y cada motor, y
 escribe docs/resultados.md. Referencia: docs/02-contrato.md sección 5 y
@@ -26,7 +26,7 @@ CASOS_REFERENCIA = RAIZ / "tests" / "cases.json"
 CASOS_NO_VISTOS = RAIZ / "tests" / "cases_no_vistos.json"
 SALIDA = RAIZ / "docs" / "resultados.md"
 
-MODOS = ("traditional", "generative")
+MODOS = ("traditional", "generative", "ml")
 MODELO_POR_DEFECTO = "gemini-3.1-flash-lite"
 CAMPOS_CASO = ("message", "expectedCategory", "expectedPriority", "type")
 LARGO_MENSAJE_EN_LISTA = 80
@@ -347,11 +347,11 @@ def _imprimir_progreso(r):
 def main(argv=None, client=None):
     parser = argparse.ArgumentParser(
         prog="python -m tests.compare",
-        description="Compara ambos motores contra los casos de evaluación y "
+        description="Compara los motores contra los casos de evaluación y "
         "escribe docs/resultados.md.",
     )
     parser.add_argument(
-        "--mode", choices=MODOS, help="correr un solo motor (por defecto, ambos)"
+        "--mode", choices=MODOS, help="correr un solo motor (por defecto, todos)"
     )
     parser.add_argument(
         "--delay",

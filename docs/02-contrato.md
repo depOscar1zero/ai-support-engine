@@ -20,7 +20,7 @@ Este documento define lo que los tres integrantes deben respetar para que sus pa
 | Campo | Tipo | Reglas |
 |---|---|---|
 | `message` | string | Obligatorio. De 1 a 2000 caracteres. No puede ser solo espacios. |
-| `mode` | string | Obligatorio. `traditional` o `generative`. |
+| `mode` | string | Obligatorio. `traditional`, `generative` o `ml`. |
 
 ### Respuesta (200)
 
@@ -87,6 +87,7 @@ class Priority(str, Enum):
 class Mode(str, Enum):
     traditional = "traditional"
     generative = "generative"
+    ml = "ml"
 
 class AnalyzeRequest(BaseModel):
     message: str = Field(min_length=1, max_length=2000)

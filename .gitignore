@@ -10,6 +10,10 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
+# Artefactos entrenados de Machine Learning
+models/*.joblib
+!models/.gitkeep
+
 # Editor y sistema
 .vscode/
 .idea/

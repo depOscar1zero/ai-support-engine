@@ -20,6 +20,7 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 | D10 | `main` nunca se toca: todo entra por pull request | Aprobada |
 | D11 | Segundo conjunto de casos no vistos para medir generalización | Aprobada |
 | D12 | Modelo generativo: gemini-3.1-flash-lite en lugar de gemini-3.8-flash | Aprobada |
+| D13 | El modelo ML se entrena fuera de la API y se carga de forma diferida | Aprobada |
 
 ## D1 — Una función `analyze()` por motor con un tipo de retorno común
 
@@ -118,4 +119,13 @@ Cada decisión registra qué se eligió, por qué y qué alternativa se descart�
 - **Por qué:** el proyecto pide un modelo generativo mediante API, sin fijar cuál; la comparativa y la demo necesitan un modelo que responda.
 - **Costo aceptado:** un modelo "lite" puede clasificar peor los casos ambiguos y adversariales. Si ocurre, se reporta tal cual en `docs/resultados.md`.
 - **Alternativa descartada:** mantener `gemini-3.8-flash` con reintentos. Con fallos de casi 60 s por llamada, la comparativa tardaría demasiado y la demo en vivo no sería confiable.
- 
+
+## D13 — El modelo ML se entrena fuera de la API y se carga de forma diferida
+
+- **Fecha:** 18 de noviembre de 2026
+- **Decisión:** `scripts/train_ml.py` valida `data/tickets.csv`, separa entrenamiento y prueba, entrena el pipeline TF-IDF + regresión logística y guarda el artefacto. `app/engines/ml.py` solo hace inferencia y carga el artefacto la primera vez que se usa.
+- **Por qué:** entrenar al importar el servidor haría lento e inestable cada arranque y obligaría a tener el CSV disponible en producción.
+- **Seguridad de datos:** el dataset entregado se revisó antes de versionarlo y no contiene datos personales ni secretos. `models/*.joblib` está ignorado por Git. El entrenamiento rechaza mensajes duplicados y coincidencias exactas con los conjuntos reservados de evaluación.
+- **Costo aceptado:** antes de utilizar `mode=ml` debe ejecutarse explícitamente `python -m scripts.train_ml`; si falta el artefacto, la API responde 502 sin revelar rutas ni detalles internos.
+- **Alternativa descartada:** ejecutar `model.fit()` al iniciar la API o en cada petición.
+
