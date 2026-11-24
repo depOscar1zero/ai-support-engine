@@ -25,6 +25,7 @@ MODELO_POR_DEFECTO = RAIZ / "models" / "ticket_classifier.joblib"
 CATEGORIAS = ("ACCESS", "BUG", "FEATURE", "SECURITY")
 COLUMNAS = ("message", "category")
 SEMILLA = 42
+MENSAJE_DEMO = "Encontré datos de otros clientes"
 CASOS_DE_EVALUACION = (
     Path(__file__).resolve().parent.parent / "tests" / "cases.json",
     Path(__file__).resolve().parent.parent / "tests" / "cases_no_vistos.json",
@@ -179,6 +180,10 @@ def entrenar(
     modelo.fit(X_train, y_train)
     predicciones = modelo.predict(X_test)
 
+    new_message = [MENSAJE_DEMO]
+    category = modelo.predict(new_message)[0]
+    confidence = modelo.predict_proba(new_message).max()
+
     reporte_texto = classification_report(
         y_test,
         predicciones,
@@ -220,6 +225,9 @@ def entrenar(
         "category_counts": datos["category"].value_counts().sort_index().to_dict(),
         "report": reporte_texto,
         "confusion_matrix": matriz,
+        "demo_message": MENSAJE_DEMO,
+        "demo_category": str(category),
+        "demo_confidence": float(confidence),
         "output": salida,
     }
 
@@ -260,6 +268,9 @@ def main(argv=None) -> int:
     print("Matriz de confusión (ACCESS, BUG, FEATURE, SECURITY):")
     for fila in resultado["confusion_matrix"]:
         print(fila)
+    print(f"\nMensaje de ejemplo: {resultado['demo_message']}")
+    print("Categoría:", resultado["demo_category"])
+    print("Score aproximado:", round(resultado["demo_confidence"], 3))
     print(f"\nModelo guardado en: {resultado['output']}")
     return 0
 
