@@ -80,6 +80,9 @@ def test_entrena_y_guarda_artefacto(tmp_path):
     assert resultado["train_rows"] == 16
     assert resultado["test_rows"] == 4
     assert set(resultado["category_counts"]) == set(CATEGORIAS)
+    assert resultado["demo_message"] == "Encontré datos de otros clientes"
+    assert resultado["demo_category"] in CATEGORIAS
+    assert 0 <= resultado["demo_confidence"] <= 1
 
 
 def test_validate_only_no_crea_modelo(tmp_path, capsys):

@@ -4,7 +4,6 @@ Olvidé mi contraseña y el enlace para restablecerla no llega a mi correo,ACCES
 El sistema rechaza mi usuario aunque estoy escribiendo los datos correctos,ACCESS
 Me cambiaron el teléfono y el código de verificación sigue llegando al número anterior,ACCESS
 Mi cuenta aparece bloqueada después de varios intentos de acceso,ACCESS
-Al ingresar mis credenciales la página vuelve a mostrar el formulario de inicio,ACCESS
 No recibo el correo de activación para terminar de registrar mi cuenta,ACCESS
 Necesito que habiliten mi usuario porque hoy comienzo a trabajar,ACCESS
 No puedo entrar al módulo de nómina con mi cuenta habitual,ACCESS
@@ -19,36 +18,41 @@ Después de cambiar mi contraseña sigo sin poder acceder,ACCESS
 Mi cuenta quedó suspendida y necesito que la reactiven,ACCESS
 No puedo ingresar desde mi computadora nueva aunque la cuenta funciona en otra,ACCESS
 El código temporal de acceso nunca llega por SMS,ACCESS
-Quisiera cambiar el correo asociado a mi cuenta porque ya no uso el anterior,ACCESS
-Me aparece acceso denegado al abrir el panel de reportes,ACCESS
-El sistema me pide iniciar sesión cada vez que cambio de sección,ACCESS
+Ya no tengo acceso al correo asociado a mi cuenta y necesito cambiarlo para poder recuperar mi acceso al portal,ACCESS
+Me aparece acceso denegado al abrir el panel de reportes y necesito que me asignen el permiso para consultarlo,ACCESS
 Necesito recuperar mi usuario porque no recuerdo con qué correo me registré,ACCESS
 Mi contraseña nueva no funciona y el sistema no explica el motivo,ACCESS
 El administrador me dio de alta pero todavía no puedo entrar,ACCESS
 No puedo acceder al escritorio remoto de la empresa,ACCESS
-Al autenticarme aparece un aviso de sesión inválida,ACCESS
+Cada vez que intento autenticarme aparece un aviso de sesión inválida y necesito que revisen el estado de mi cuenta,ACCESS
 Mi cuenta no tiene habilitado el acceso al módulo de facturación,ACCESS
-El inicio de sesión se queda cargando y nunca abre mi perfil,ACCESS
 Quiero restablecer mi contraseña porque olvidé la anterior,ACCESS
 El sistema indica que mi usuario no está autorizado para esta aplicación,ACCESS
 No puedo validar mi identidad porque perdí el dispositivo de autenticación,ACCESS
-Me dieron acceso al proyecto pero no aparece en mi lista de espacios,ACCESS
-El botón de entrar me devuelve a la pantalla de acceso sin explicación,ACCESS
+"Ya me asignaron al proyecto, pero sigo sin tener acceso: no puedo abrirlo ni aparece en mi lista de espacios, necesito que revisen mis permisos",ACCESS
 Necesito que desbloqueen mi cuenta para consultar los horarios,ACCESS
-"El correo de recuperación llega, pero el enlace no permite crear otra contraseña",ACCESS
 Desde que cambié de área ya no puedo entrar al módulo que utilizaba,ACCESS
-Mi sesión aparece como expirada inmediatamente después de autenticarme,ACCESS
 No puedo ingresar al sistema con las credenciales que me proporcionó soporte,ACCESS
 Solicito permisos de lectura para la carpeta de contratos,ACCESS
 El acceso con mi cuenta corporativa dejó de funcionar hoy,ACCESS
 No puedo completar el registro porque el código de confirmación es rechazado,ACCESS
 Me aparece un error de credenciales incorrectas aunque ya verifiqué mi contraseña,ACCESS
 Necesito acceso temporal al panel de administración para realizar una consulta,ACCESS
-La aplicación no conserva mi sesión cuando cierro y vuelvo a abrir el navegador,ACCESS
 Mi usuario sigue pendiente de aprobación y no puedo comenzar mis actividades,ACCESS
 No tengo autorización para abrir los documentos del equipo de logística,ACCESS
-Al intentar entrar con inicio de sesión único aparece una pantalla en blanco,ACCESS
 Perdí acceso a mi cuenta después de que actualizaron mis datos de empleado,ACCESS
+Mi certificado de la VPN venció y necesito que lo renueven para poder conectarme a la red de la empresa,ACCESS
+Mi cuenta de contratista llegó a su fecha de vencimiento y necesito que amplíen su vigencia para seguir trabajando,ACCESS
+Solicito que me agreguen al grupo de aprobadores para poder autorizar las compras de mi área,ACCESS
+"Cambié de apellido y mi usuario ya no coincide con el registrado, por lo que el sistema no me reconoce; necesito que actualicen mi cuenta",ACCESS
+"Mi jefe me delegó sus permisos durante sus vacaciones, pero el sistema todavía no me deja abrir sus carpetas",ACCESS
+"Quiero registrar un dispositivo de autenticación nuevo, pero el administrador debe aprobarlo y necesito que lo habiliten",ACCESS
+Estoy de viaje en otro país y mi cuenta quedó restringida por ubicación; solicito que habiliten mi acceso temporalmente,ACCESS
+Mi cuenta anterior fue eliminada al cambiarme de empresa filial y necesito que me asignen un usuario nuevo,ACCESS
+"Aunque mis credenciales son correctas y mi cuenta está activa, al ingresarlas la página vuelve a mostrar el formulario de inicio de sesión una y otra vez",BUG
+"Aunque ya inicié sesión correctamente, la aplicación me vuelve a pedir usuario y contraseña cada vez que cambio de sección",BUG
+"El correo de recuperación llega y el enlace abre, pero la página de nueva contraseña no deja escribir ni guardar porque el botón no responde",BUG
+"Al entrar con inicio de sesión único aparece una pantalla en blanco, aunque mi cuenta está activa y funciona en otras aplicaciones",BUG
 La aplicación se cierra al exportar un reporte en PDF,BUG
 El botón Guardar no realiza ninguna acción en la pantalla de perfil,BUG
 Al filtrar por fecha la tabla muestra resultados de otros meses,BUG
@@ -62,7 +66,7 @@ El calendario muestra un día diferente al que seleccioné,BUG
 La aplicación tarda demasiado y termina mostrando un error 500,BUG
 El formulario permite enviar una solicitud sin completar el campo obligatorio,BUG
 Los cambios de dirección no se reflejan después de guardar el perfil,BUG
-Al abrir el detalle de un pedido se muestra la información de otro pedido,BUG
+Al abrir el detalle de uno de mis pedidos se muestra la información de otro de mis pedidos,BUG
 El botón para cerrar el aviso de mantenimiento no responde,BUG
 En Firefox los gráficos del tablero aparecen cortados,BUG
 El sistema pierde los filtros cuando cambio de página en los resultados,BUG
@@ -81,36 +85,32 @@ Al seleccionar una sucursal el sistema conserva los datos de la anterior,BUG
 El campo de búsqueda borra el texto antes de mostrar los resultados,BUG
 Las imágenes de los productos no cargan en la vista de detalle,BUG
 El botón Siguiente del asistente no avanza aunque todos los datos están completos,BUG
-El sistema registra dos veces el mismo movimiento cuando hago clic una vez,BUG
-Al consultar el historial aparece un mensaje de error inesperado,BUG
-La aplicación se desconecta cuando intento subir varios documentos,BUG
+Al consultar el historial de pedidos aparece un mensaje de error inesperado y no se muestra ningún registro,BUG
+La aplicación se cierra sola cuando intento subir varios documentos al mismo tiempo,BUG
 Los totales de la nómina no coinciden con la suma de los conceptos,BUG
 En Safari el menú desplegable queda detrás de la ventana principal,BUG
 El sistema muestra una fecha incorrecta al generar el comprobante,BUG
-Después de actualizar la página desaparecen los datos capturados en el formulario,BUG
+"Después de guardar el formulario y actualizar la página, los datos que había capturado desaparecen",BUG
 El filtro por departamento no funciona y siempre muestra todos los registros,BUG
 Al guardar una observación se elimina el comentario anterior,BUG
-El botón Descargar genera un archivo vacío,BUG
-La pantalla de reportes se queda cargando indefinidamente al elegir un rango amplio,BUG
 El contador de notificaciones sigue mostrando mensajes que ya leí,BUG
 Al cambiar el tamaño de ventana algunos campos quedan fuera de la pantalla,BUG
 El sistema permite registrar una cantidad negativa en el inventario,BUG
 El módulo de facturación muestra un error al intentar cancelar un comprobante,BUG
 Las etiquetas de estado no se actualizan después de cambiar el estado de una solicitud,BUG
-El gráfico mensual suma dos veces las operaciones del último día,BUG
 "Al seleccionar varios elementos para eliminar, solo se elimina el primero",BUG
 Sería útil contar con un modo oscuro para trabajar por la noche,FEATURE
 ¿Pueden agregar la opción de exportar los reportes a Excel?,FEATURE
-Necesitamos un filtro por departamento en el listado de empleados,FEATURE
+"Necesitamos agregar un filtro por departamento al listado de empleados, ya que actualmente no existe esa opción",FEATURE
 Me gustaría recibir un aviso por correo cuando una solicitud sea aprobada,FEATURE
 Sería conveniente poder programar reportes para que se envíen cada semana,FEATURE
 Propongo agregar una opción para guardar búsquedas frecuentes,FEATURE
 ¿Podrían incluir una vista de calendario para organizar las entregas?,FEATURE
-Necesitamos que el sistema permita adjuntar varios archivos a una solicitud,FEATURE
+Necesitamos que el sistema permita adjuntar varios archivos a una solicitud; hoy solo deja adjuntar uno,FEATURE
 Estaría bien tener un botón para duplicar una orden existente,FEATURE
 Quisiera poder personalizar las columnas que aparecen en el tablero,FEATURE
 Sería de mucha ayuda agregar una búsqueda por número de factura,FEATURE
-¿Pueden incorporar notificaciones dentro de la aplicación?,FEATURE
+¿Pueden agregar notificaciones push al celular cuando haya cambios en mis solicitudes?,FEATURE
 Nos gustaría contar con una opción para descargar los comprobantes en PDF,FEATURE
 Propongo agregar etiquetas personalizadas para organizar los tickets,FEATURE
 Sería útil poder consultar el historial de cambios de cada registro,FEATURE
@@ -131,7 +131,7 @@ Necesitamos una función para compartir reportes mediante un enlace,FEATURE
 Sería conveniente permitir comentarios y menciones entre compañeros,FEATURE
 ¿Pueden incluir una opción para archivar proyectos terminados?,FEATURE
 Quisiera recibir un resumen diario de las actividades pendientes,FEATURE
-Estaría bien agregar filtros combinados por sucursal y estado,FEATURE
+"Estaría bien agregar filtros combinados por sucursal y estado, porque hoy solo se puede filtrar por un criterio a la vez",FEATURE
 Solicitamos una función para comparar reportes de distintos periodos,FEATURE
 Sería útil permitir que cada usuario configure sus preferencias de notificación,FEATURE
 ¿Podrían agregar un botón para copiar el identificador de una factura?,FEATURE
@@ -156,14 +156,14 @@ Un usuario sin permisos puede abrir el panel de administración,SECURITY
 El enlace para restablecer contraseña permite reutilizar un token que ya fue usado,SECURITY
 Detecté que la aplicación muestra claves de acceso en los registros de errores,SECURITY
 Al consultar un documento puedo modificar el identificador y descargar archivos ajenos,SECURITY
-Un compañero recibió una alerta de inicio de sesión desde un país desconocido que no reconoce,SECURITY
+Un compañero recibió una alerta de inicio de sesión desde un país desconocido y sospechamos que sus credenciales fueron robadas,SECURITY
 El portal permite acceder a información confidencial sin comprobar la sesión,SECURITY
 Encontré una contraseña de servicio publicada accidentalmente en un repositorio,SECURITY
 Los archivos adjuntos de los clientes pueden descargarse conociendo únicamente su dirección,SECURITY
 Una cuenta desactivada todavía puede utilizar la API para consultar información,SECURITY
 El sistema permite cambiar el rol de una cuenta enviando una petición modificada,SECURITY
 Se están enviando mensajes de phishing a varios empleados usando el nombre de la empresa,SECURITY
-Detecté que los datos bancarios aparecen completos en una pantalla visible para todos,SECURITY
+"Detecté que los datos bancarios aparecen completos en una pantalla que puede ver cualquier usuario, incluso sin permisos",SECURITY
 El formulario permite insertar contenido que se ejecuta al abrir el comentario de otro usuario,SECURITY
 Una persona externa pudo entrar a una reunión interna mediante un enlace predecible,SECURITY
 Encontré información de sesión expuesta en la dirección del navegador,SECURITY
@@ -175,7 +175,7 @@ Un archivo de respaldo con información de clientes quedó accesible públicamen
 El sistema acepta contraseñas temporales que ya deberían haber expirado,SECURITY
 Detecté múltiples intentos automatizados de acceso contra las cuentas del personal,SECURITY
 Una solicitud manipulada permite consultar datos que pertenecen a otros usuarios,SECURITY
-El portal revela detalles internos del servidor cuando ocurre un error,SECURITY
+"Cuando ocurre un error, el portal muestra a cualquier visitante rutas, versiones y detalles internos del servidor que podrían ayudar a un atacante",SECURITY
 Se publicó por accidente una llave privada en un espacio compartido,SECURITY
 Un empleado puede ver los datos de nómina de personas fuera de su área,SECURITY
 Recibimos una notificación de acceso sospechoso a la cuenta de administración,SECURITY
